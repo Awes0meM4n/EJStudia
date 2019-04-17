@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+:root{
+  --ancho-elementos: 300px;
+  --fuente: 'Orbitron', sans-serif;
+  --colorFondo: #483c29;
+  --colorFrente: orange;
+}
+
+* {
+  font-family: var(--fuente);
+}
+
+.display {
+  width: var(--ancho-elementos);
+  border: var(--colorFondo) 2px solid;
+  border-radius: 5px;
+  margin: 2em auto;
+}
+
+.estudiometro {
+  text-align: center;
+  font-size: 140%;
+  background-color: var(--colorFondo);
+  color: var(--colorFrente);
+}
+
+#recorrido {
+  background: rgba(137,137,137,1);
+  background: linear-gradient(to bottom, white 0%, rgba(52,228,247,1) 48%, rgba(31,240,24,1) 55%, rgba(186,93,0,1) 61%, rgba(48,48,48,1) 69%, rgba(48,48,48,1) 100%);
+  border-radius: 20px;
+  margin: 0 5%;
+  padding: 0 4%;
+}
+
+.estudianteWrapper {
+  width: 0;
+  text-align: center;
+  transition-duration: 200ms;
+  transition-timing-function: linear;
+}
+
+.estudianteWrapper .interno {
+  right: -50%;
+  display: inline-block;
+  position: relative;
+}
+
+.estudianteWrapper img {
+  position: relative;
+  left: -50%;
+}
+
+.inicio {
+  float: left;
+}
+
+.fin {
+  float: right;
+}
+
+.inicio, .fin {
+  font-size: 130%;
+}
+
+.grafica {
+  height: 370px;
+  width: 100%;
+}
+
+.oculto {
+  display: none;
+}

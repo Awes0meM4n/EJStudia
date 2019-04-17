@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Examen JS - ¡EJStudia!</title>
+  <link rel="stylesheet" type="text/css" href="recursos/estilo.css">
+  <script src="recursos/gauge.min.js"></script>
+  <script src="recursos/no-tocar.js"></script>
+  <script>
+    var horasDeClase = 1000;
+    //Instanciarla
+    var estudiante = new Estudiante();
+
+    function porcentajeRecorrido(){
+      return estudiante.horasDeClase * 100 / horasDeClase;
+    }
+
+    function pintarJuego(){
+      gauge.set(estudiante.estudio);
+      //Esto lo completan los alumnos
+      //Seleccionar un elemento
+      document.querySelector(".estudiometro span").textContent = estudiante.estudio;
+      //Horquillar y cambiar propiedad
+      document.querySelector(".estudianteWrapper").style.marginLeft = Math.min((porcentajeRecorrido() * 0.95), 95) + "%";
+    }
+
+    function checkAgobio() {
+      //Tienen que implementarlo
+      let correcto = true;
+      //Bifurcaciones
+      if(estudiante.estudio > 120) {
+        alert("¡Te has quemado!");
+        correcto = false;
+      }
+      if(estudiante.estudio < 20) {
+        alert("¡Te ha pillado el toro!")
+        correcto = false;
+      }
+
+      return correcto;
+    }
+
+    function presenteEnCurso() {
+      return horasDeClase > estudiante.horasDeClase;
+    }
+
+    function actualizarJuego() {
+      //Condicionales
+      if(presenteEnCurso() && checkAgobio()){
+        pintarJuego()
+      } else {
+        finDelCurso();
+      }
+    }
+
+    //Uso de arrays
+    var datosEstudio = [{x: 0, y: estudiante.estudio}];
+    function registarEstudio(){//Sirve con x,y para no tener que mapear en la grafica
+      datosEstudio.push({x: estudiante.horasDeClase, y: estudiante.estudio});
+    }
+
+    function finDelCurso(){
+      //Implementarlo
+      //Quitar listeners
+      document.body.removeEventListener("keypress", apretarLosCodos);
+      document.body.removeEventListener("keyup", relajarse);
+
+      //Quitar intervalos
+      clearInterval(idRegistro);
+      clearInterval(idGameLoop);
+
+      //Orden correcto
+      registarEstudio();
+      estudiante.estudio = 0;
+      pintarJuego();
+
+      //Bucle
+      let estudioAcumulado = 0;
+      for(let e of datosEstudio){
+        estudioAcumulado += e.y;
+      }
+
+      //Formatear resultado
+      alert("¡Has terminado el curso!\nTu media de estudio fue: " + (estudioAcumulado / datosEstudio.length).toFixed(2) + " m/h");
+
+      //Uso de librerias
+      document.querySelector("#grafica").classList.remove("oculto");
+      crearDiagrama(datosEstudio).render();
+    }
+
+    //Crear funciones de listeners
+    apretarLosCodos = (evento) => {
+      if(evento.key == ' ')
+        estudiante.apretarLosCodos();
+    }
+    relajarse = () => estudiante.relajarse();
+  </script>
+</head>
+<body>
+  <h2 style="text-align:center">¿Cómo terminar el curso?</h2>
+  <div id="recorrido">
+    <div class="estudianteWrapper">
+      <div class="interno">
+        <img src="recursos/coche.gif" alt="estudiante">
+      </div>
+    </div>
+    <div class="base">
+      <div class="inicio">Inicio</div>
+      <div class="fin">Fin de curso</div>
+    </div>
+  </div>
+
+  <div class="display">
+    <div class="aguja"><canvas id="gauge"></canvas></div>
+    <div class="estudiometro"><span></span> m/h</div>
+  </div>
+  <div id="grafica" class="grafica oculto" style="height: 370px; width: 100%;"></div>
+<!-- BORRAR PARA EL EXAMEN (libreria a eleccion del alumno) -->
+<script src="canvasjs.min.js"></script>
+<script>
+  crearAguja();
+
+  //Completar con las sentencias que no pueden estar en HEAD
+
+  //Añadir listeners a eventos de varias formas distintas
+  document.body.addEventListener("keypress", apretarLosCodos);
+  document.body.onkeyup = relajarse;
+
+  //Uso de librerias
+  function crearDiagrama(datosEstudio) {
+    //Mapear si no coincide con lo que pide la libreria
+    return new CanvasJS.Chart("grafica", {
+      animationEnabled: true,  
+      title:{
+        text: "Gráfico de estudio",
+        fontFamily: "var(--fuente)"
+      },
+      data: [{
+        yValueFormatString: "#,### m/h",
+        xValueFormatString: "Estudio",
+        type: "spline",
+        dataPoints: datosEstudio
+      }],
+      axisX: {
+        title: "Horas de clase",
+        suffix: " h",
+        minimum: 0,
+        maximum: datosEstudio[datosEstudio.length - 1].x,
+      },
+      axisY: {
+        title: "Minutos",
+        suffix: " m",
+      }
+    });
+  }
+
+  //Usar setIntervals guardando ids
+  var idGameLoop = setInterval(actualizarJuego, 100);
+  var idRegistro = setInterval(registarEstudio, 1000);
+</script>
+</body>
+</html>
